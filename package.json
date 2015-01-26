@@ -4,12 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jasmine-node spec"
+    "test": "jasmine-node spec",
+    "build": "browserify src/index.js > build/index.js"
   },
   "repository": {
     "type": "git",
     "url": "git@bitbucket.org:js-lessons/homework-results.git"
   },
   "author": "dra1n",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "browserify": "^8.1.1"
+  },
+  "dependencies": {
+    "octokat": "js-lessons/octokat.js"
+  }
 }

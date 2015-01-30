@@ -1,12 +1,5 @@
 var Octokat = require('octokat');
 
-var repos = [
-  'js-lessons/js-basics-1',
-  'js-lessons/js-basics-2',
-  'js-lessons/js-basics-3',
-  'js-lessons/js-basics-4'
-];
-
 var octo = new Octokat({});
 
 function asyncLoad(ids, load, done) {
@@ -70,4 +63,6 @@ function loadStatus(pull, cb) {
   });
 }
 
-global.loadBuild = asyncLoad.bind(null, repos, loadPulls);
+global.loadBuild = function(repos, cb) {
+  asyncLoad(repos, loadPulls, cb);
+}

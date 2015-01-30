@@ -956,13 +956,6 @@ module.exports = require('./src/octokat');
 (function (global){
 var Octokat = require('octokat');
 
-var repos = [
-  'js-lessons/js-basics-1',
-  'js-lessons/js-basics-2',
-  'js-lessons/js-basics-3',
-  'js-lessons/js-basics-4'
-];
-
 var octo = new Octokat({});
 
 function asyncLoad(ids, load, done) {
@@ -970,14 +963,16 @@ function asyncLoad(ids, load, done) {
   var loaded = [];
 
   ids.forEach(function(id, index) {
-    load(id, function(el) {
+    load(id, function(err, el) {
+      if (err) return done(err);
+
       loaded[index] = el;
-      if (++completed === ids.length) return done(loaded);
+      if (++completed === ids.length) return done(null, loaded);
     });
   });
 }
 
-function userGrades(pulls, statuses) {
+function userBuild(pulls, statuses) {
   return pulls.reduce(function(acc, p, i) {
     var status = statuses[i][0];
 
@@ -998,22 +993,35 @@ function loadPulls(name, cb) {
 
   .then(function(pulls) {
     if(pulls.length === 0) {
-      cb({ repo: name, grades: null})
+      cb(null, { repo: name, build: null})
     } else {
-      asyncLoad(pulls, loadStatus, function(statuses) {
-        cb({ repo: name, grades: userGrades(pulls, statuses) });
+      asyncLoad(pulls, loadStatus, function(err, statuses) {
+        if (err) return cb(err);
+        cb(null, { repo: name, build: userBuild(pulls, statuses) });
       });
     }
+  })
+
+  .then(null, function(err) {
+    cb(err);
   });
 }
 
 function loadStatus(pull, cb) {
-  pull.statuses().then(function(res) {
-    cb(res);
+  pull.statuses()
+
+  .then(function(res) {
+    cb(null, res);
+  })
+
+  .then(null, function (err) {
+    cb(err);
   });
 }
 
-global.loadGrades = asyncLoad.bind(null, repos, loadPulls);
+global.loadBuild = function(repos, cb) {
+  asyncLoad(repos, loadPulls, cb);
+}
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"octokat":1}]},{},[10]);

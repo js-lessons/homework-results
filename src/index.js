@@ -23,7 +23,7 @@ function asyncLoad(ids, load, done) {
   });
 }
 
-function userGrades(pulls, statuses) {
+function userBuild(pulls, statuses) {
   return pulls.reduce(function(acc, p, i) {
     var status = statuses[i][0];
 
@@ -44,11 +44,11 @@ function loadPulls(name, cb) {
 
   .then(function(pulls) {
     if(pulls.length === 0) {
-      cb(null, { repo: name, grades: null})
+      cb(null, { repo: name, build: null})
     } else {
       asyncLoad(pulls, loadStatus, function(err, statuses) {
         if (err) return cb(err);
-        cb(null, { repo: name, grades: userGrades(pulls, statuses) });
+        cb(null, { repo: name, build: userBuild(pulls, statuses) });
       });
     }
   })
@@ -70,4 +70,4 @@ function loadStatus(pull, cb) {
   });
 }
 
-global.loadGrades = asyncLoad.bind(null, repos, loadPulls);
+global.loadBuild = asyncLoad.bind(null, repos, loadPulls);

@@ -1,7 +1,5 @@
 var Octokat = require('octokat');
 
-var octo = new Octokat({});
-
 function asyncLoad(ids, load, done) {
   var completed = 0;
   var loaded = [];
@@ -26,8 +24,20 @@ function userBuild(pulls, statuses) {
   }, {});
 }
 
+function loadStatus(pull, cb) {
+  pull.statuses()
+
+  .then(function(res) {
+    cb(null, res);
+  })
+
+  .then(null, function (err) {
+    cb(err);
+  });
+}
+
 function loadPulls(name, cb) {
-  var repo = octo.repos.apply(octo, name.split('/'));
+  var repo = this.octo.repos.apply(this.octo, name.split('/'));
 
   repo.fetch()
 
@@ -51,18 +61,16 @@ function loadPulls(name, cb) {
   });
 }
 
-function loadStatus(pull, cb) {
-  pull.statuses()
-
-  .then(function(res) {
-    cb(null, res);
-  })
-
-  .then(null, function (err) {
-    cb(err);
-  });
+function HomeworkResults(options) {
+  if (options.username && options.password) {
+    this.octo = new Octokat(options);
+  } else {
+    this.octo = new Octokat();
+  }
 }
 
-global.loadBuild = function(repos, cb) {
-  asyncLoad(repos, loadPulls, cb);
-}
+HomeworkResults.prototype.get = function(repos, cb) {
+  asyncLoad(repos, loadPulls.bind(this), cb);
+};
+
+global.HomeworkResults = HomeworkResults;

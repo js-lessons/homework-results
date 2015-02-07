@@ -7,6 +7,8 @@ var repos = [
   'js-lessons/js-basics-4'
 ];
 
-loadBuild(repos, function(err, result) {
-  console.log(result);
+var results = new HomeworkResults();
+
+results.get(repos, function(err, data) {
+  console.log(data);
 });

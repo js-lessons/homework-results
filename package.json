@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
     "test": "jasmine-node spec",
     "build": "browserify src/index.js > build/index.js"
   },
@@ -17,6 +18,7 @@
     "browserify": "^8.1.1"
   },
   "dependencies": {
+    "express": "^4.11.2",
     "octokat": "js-lessons/octokat.js"
   }
 }
